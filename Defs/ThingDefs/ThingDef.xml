@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ModeMetaData>
-    <name>Test Mod</name>
-    <author>Lorenzo Alamillo</author>
-    <targetVersion>0.18.0</targetVersion>
-    <description>v0.1 Testing how to make a mod</description>
-</ModeMetaData>
+<Defs>
+    <ThingDef Class="PityTimer.PityTimer">
+        <defName>PityTimer</defName>
+        <thingClass>PityTimer.PityTimer</thingClass>
+    </ThingDef>
+</Defs>
