@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModeMetaData>
-    <name>Test Mod</name>
+    <name>Pity Timer</name>
     <author>Lorenzo Alamillo</author>
     <targetVersion>0.18.0</targetVersion>
-    <description>v0.1 Testing how to make a mod</description>
+    <description>RNG Correction for Recruiting
+Requires HugsLib to be loaded before this mod
+        v0.3
+    </description>
 </ModeMetaData>

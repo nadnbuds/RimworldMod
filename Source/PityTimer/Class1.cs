@@ -4,6 +4,8 @@ using HugsLib;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Reflection;
+using UnityEngine;
+using Verse;
 
 namespace PityTimer
 {
@@ -11,9 +13,14 @@ namespace PityTimer
     [HarmonyPatch("Interacted")]
     public class PityTimer : ModBase
     {
+        public const string OpToFind = "Single Clamp(Single, Single, Single)";
+        public static float pityMultiplier = 1.5f;
+        public static Dictionary<string, int> recruitMap;
+
         public PityTimer()
         {
-            Verse.Log.Message("PityTimerStarted");
+            recruitMap = new Dictionary<string, int>();
+            Log.Message("PityTimerStarted");
         }
 
         public override string ModIdentifier => "LorenzoAlamilloPityTimer";
@@ -23,14 +30,17 @@ namespace PityTimer
         {
             MethodInfo Clamp = AccessTools.Method(typeof(float),"Clamp", new System.Type[] { typeof(float), typeof(float), typeof(float) });
             List<CodeInstruction> codeList = new List<CodeInstruction>(instr);
+
             for(int i = 0; i < codeList.Count; ++i)
             {
                 CodeInstruction instruction = codeList[i];
-                if (codeList[i].opcode == OpCodes.Call
-                    && codeList[i].operand.ToString().Equals("Single Clamp(Single, Single, Single)"))
+
+                if (codeList[i].opcode == OpCodes.Call && 
+                    codeList[i].operand.ToString().Equals(OpToFind))
                 {
+                    instruction = new CodeInstruction(OpCodes.Ldarg_2);
                     yield return instruction;
-                    Verse.Log.Message("PityTimer OpCode Found");
+
                     instruction = new CodeInstruction(OpCodes.Call);
                     instruction.operand = typeof(PityTimer).GetMethod(
                         nameof(PityTimer.PityTimerTrigger), BindingFlags.Static | BindingFlags.Public); 
@@ -44,9 +54,21 @@ namespace PityTimer
             }
         }
 
-        public static void PityTimerTrigger()
+        public static float PityTimerTrigger(float num, float lowerBound, float upperBound, Pawn recipient)
         {
-            Verse.Log.Message("PityTimer Function Trigger");
+            float mapUpperBound = Mathf.Pow((1.0f / num) * pityMultiplier, 4);
+
+            if(recruitMap.ContainsKey(recipient.ThingID))
+            {
+                int val = recruitMap[recipient.ThingID]++;
+                float scale = Mathf.Pow(val, 4)/mapUpperBound;
+                num += (1 - num) * scale;
+            }
+            else
+            {
+                recruitMap.Add(recipient.ThingID, 1);
+            }
+            return Mathf.Clamp(num, lowerBound, upperBound);
         }
     }
 }

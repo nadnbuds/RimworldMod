@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Defs>
-    <ThingDef Class="PityTimer.PityTimer">
-        <defName>PityTimer</defName>
-        <thingClass>PityTimer.PityTimer</thingClass>
-    </ThingDef>
-</Defs>
